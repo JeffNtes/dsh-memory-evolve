@@ -4,6 +4,12 @@
 
 > [English](CHANGELOG.en.md)
 
+## 2026-11-16
+
+### 修复
+
+- **记忆同步 worker 缺失：npm 发布包漏掉 `scripts/` 目录（阻塞级）**：发布包的 `files` 白名单漏了 `scripts/`，导致 `scripts/sync-worker.mjs`（记忆同步 sync / status / decide / global-init 共用的可执行入口）不在包内——`lib/sync/index.js` 的 `spawnWorker()` 按 `lib/sync/ → ../../scripts/sync-worker.mjs` 相对路径 spawn 子进程，文件缺失即整体失败，项目记忆与全局四轨的拉取/合并/推送全部不可用，且只在真正点「同步」时才报错。修复：`package.json` 的 `files` 白名单补上 `scripts/`（与 `lib/`、`skills/`、`vendor/` 并列），版本 0.1.0 → 0.1.1。git 直装（`dsh plugin add github:…`）不受影响（全量 clone），该缺陷只影响 npm 发布包。
+
 ## 2026-10-29
 
 ### 修复

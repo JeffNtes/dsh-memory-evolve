@@ -4,6 +4,12 @@ All version changes for this repository, in reverse chronological order.
 
 > [中文](CHANGELOG.md)
 
+## 2026-11-16
+
+### Fixed
+
+- **Memory-sync worker missing: the npm package dropped the `scripts/` directory (blocking)**: the published package's `files` allowlist omitted `scripts/`, so `scripts/sync-worker.mjs` (the single executable entry for sync / status / decide / global-init) was absent from the package — `spawnWorker()` in `lib/sync/index.js` resolves `lib/sync/ → ../../scripts/sync-worker.mjs` and spawns it as a subprocess, so a missing file fails outright, taking down pull/merge/push for both project memory and the four global tracks, and it only errors when the user actually clicks "Sync". Fix: `package.json`'s `files` allowlist now includes `scripts/` (alongside `lib/`, `skills/`, `vendor/`), version 0.1.0 → 0.1.1. Direct git installs (`dsh plugin add github:…`) are unaffected (full clone); the defect only affects the npm package.
+
 ## 2026-09-28
 
 ### Fixed
